@@ -1,0 +1,6 @@
+.listItems {
+  list-style-type: none;
+  display: flex;
+  align-self: flex-start;
+  color: antiquewhite;
+}

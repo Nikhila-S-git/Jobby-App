@@ -1,0 +1,52 @@
+.retryButton {
+  background-color: #6366f1;
+  color: white;
+  padding: 10px;
+}
+
+.jobs-bg-container {
+  background-color: black;
+  /* display: flex; */
+  padding: 20px;
+}
+
+.leftContainer {
+  width: 40vw;
+  padding: 20px;
+}
+
+.listItems {
+  list-style-type: none;
+  display: flex;
+  align-self: flex-start;
+  color: antiquewhite;
+}
+
+.jobsDisplayContainer {
+  width: 60vw;
+  color: white;
+}
+
+.heading {
+  color: antiquewhite;
+}
+
+.searchCont {
+  background-color: transparent;
+  border-radius: 3px;
+  color: white;
+}
+
+.searchIcon {
+  border-radius: 3px;
+  border-style: none;
+}
+
+.searchContainer {
+  border-style: none;
+  display: flex;
+}
+
+.containers {
+  display: flex;
+}

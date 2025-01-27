@@ -1,0 +1,17 @@
+.homeConatiner {
+  background-image: url('https://assets.ccbp.in/frontend/react-js/home-sm-bg.png');
+  background-size: cover;
+  height: 100vh;
+  color: white;
+  padding: 20px;
+}
+
+@media screen and (min-width: 992px) {
+  .homeConatiner {
+    background-image: url('https://assets.ccbp.in/frontend/react-js/home-lg-bg.png');
+  }
+}
+
+.button {
+  cursor: pointer;
+}

@@ -1,0 +1,124 @@
+.skillsContainer {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.JobDetailsContainer {
+  background-color: black;
+  padding: 20px;
+}
+
+.lifeAtCompanyContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.heading {
+  color: white;
+}
+.similarJobsCont {
+  display: flex;
+  justify-content: space-around;
+}
+
+.jobDetailsContainer {
+  background-color: #272727;
+  color: white;
+  padding: 10px;
+}
+
+.lifeAtCompanyImage {
+  width: 600px;
+}
+
+.listItem {
+  display: flex;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.listImage {
+  margin-right: 10px;
+}
+
+.spanCont {
+  display: flex;
+  align-items: center;
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.descContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.similarJobsListEl {
+  margin: 10px;
+  background-color: #272727;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  list-style-type: none;
+  width: 400px;
+}
+
+.logo-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.companyLogo {
+  height: 40px;
+  width: 40px;
+  margin-right: 5px;
+}
+
+/* .title-ratings-container {
+  height: 80px;
+} */
+
+.ratingsContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 0px;
+}
+
+.locationSalaryContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.locationEmployementType {
+  display: flex;
+  align-items: center;
+}
+
+.description-companyUrlContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lifeAtCompanyContainer {
+  display: flex;
+}
+
+.retryBtn {
+  border: none;
+  background-color: #6366f1;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.jobDetailsBgContainer {
+  background-color: #000000;
+}

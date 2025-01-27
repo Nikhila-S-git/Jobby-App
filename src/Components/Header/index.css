@@ -1,0 +1,33 @@
+.websiteLogo {
+  height: 50px;
+  width: 150px;
+}
+
+.headersList {
+  list-style-type: none;
+  display: flex;
+  width: 150px;
+  justify-content: space-between;
+}
+
+.headersContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #202020;
+  padding: 20px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.linkEl {
+  text-decoration: none;
+}
+
+.para {
+  color: #ffffff;
+}
+
+.para:hover {
+  color: #6366f1;
+}
