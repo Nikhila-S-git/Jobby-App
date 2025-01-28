@@ -1,10 +1,10 @@
 import './index.css'
 
 const TypeOfEmployement = props => {
-  const {item, handleCheckedStatus, isChecked} = props
-  const {label, employmentTypeId} = item
+  const {item, handleCheckedStatus} = props
+  const {label, employmentTypeId, isChecked} = item
   const onChangeStatus = event => {
-    handleCheckedStatus(event.target.checked, event.target.value)
+    handleCheckedStatus(item)
   }
   return (
     <li key={employmentTypeId} className="listItems">

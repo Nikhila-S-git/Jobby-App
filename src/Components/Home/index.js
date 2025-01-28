@@ -1,15 +1,10 @@
 import {withRouter, Link} from 'react-router-dom'
-import Cookies from 'js-cookie'
 
 import Header from '../Header'
 
 import './index.css'
 
-const Home = props => {
-  const onClickJobs = () => {
-    const {history} = props
-    history.push('/jobs')
-  }
+const Home = () => {
   return (
     <div className="homeConatiner">
       <Header />

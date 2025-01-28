@@ -53,6 +53,14 @@ const salaryRangesList = [
   },
 ]
 
+const locationsList = [
+  {label: 'Hyderabad', locationId: 'Hyderabad'},
+  {label: 'Banglore', locationId: 'Banglore'},
+  {label: 'Chennai', locationId: 'Chennai'},
+  {label: 'Delhi', locationId: 'Delhi'},
+  {label: 'Mumbai', locationId: 'Mumbai'},
+]
+
 const apiStatusConstants = {
   initial: 'INITIAL',
   success: 'SUCCESS',
@@ -60,13 +68,23 @@ const apiStatusConstants = {
   loading: 'LOADING',
 }
 
+const updatedEmployeesTypesList = employmentTypesList.map(each => ({
+  ...each,
+  isChecked: false,
+}))
+
+const updatedsalaryRangesList = salaryRangesList.map(each => ({
+  ...each,
+  isSelected: false,
+}))
+
 class Jobs extends Component {
   state = {
     apiStatus: apiStatusConstants.initial,
+    employmentTypesList: updatedEmployeesTypesList,
+    salaryRangesList: updatedsalaryRangesList,
     jobsData: [],
     profileDataFetched: [],
-    isChecked: false,
-    activeId: '',
     params: [],
     rangeParams: '',
     searchParam: '',
@@ -78,6 +96,9 @@ class Jobs extends Component {
     isLoading: true,
     checkedValue: '',
     noJobsFound: false,
+    isActive: false,
+    radioId: '',
+    selectedLocations: [],
   }
 
   componentDidMount() {
@@ -91,15 +112,8 @@ class Jobs extends Component {
 
   fetchJobsData = async () => {
     this.setState({apiStatus: apiStatusConstants.loading})
-    const {
-      isChecked,
-      params,
-      activeId,
-      jobsData,
-      rangeParams,
-      searchParam,
-      checkedValue,
-    } = this.state
+    const {params, jobsData, rangeParams, searchParam, checkedValue} =
+      this.state
     const queryParams = params.join(',')
     const jobsUrl = `https://apis.ccbp.in/jobs?employment_type=${queryParams}&minimum_package=${rangeParams}&search=${searchParam}`
     const jwtToken = Cookies.get('jwt_token')
@@ -155,16 +169,28 @@ class Jobs extends Component {
     }
   }
 
-  handleCheckedStatus = (value, id) => {
-    const {params} = this.state
+  handleCheckedStatus = item => {
+    const {employmentTypesList} = this.state
+    const filteredList = employmentTypesList.map(each => {
+      if (each.employmentTypeId === item.employmentTypeId) {
+        return {...item, isChecked: !item.isChecked}
+      } else {
+        return {...each}
+      }
+    })
     this.setState(
-      {params: [...params, id], isChecked: value},
+      prevState => ({
+        params: prevState.params.includes(item.employmentTypeId)
+          ? [...prevState.params.filter(each => item.employmentTypeId !== each)]
+          : [...prevState.params, item.employmentTypeId],
+        employmentTypesList: filteredList,
+      }),
       this.fetchJobsData,
     )
   }
 
   handleRadioStatus = value => {
-    this.setState({rangeParams: value}, this.fetchJobsData)
+    this.setState({rangeParams: value, radioId: value}, this.fetchJobsData)
   }
 
   onChangeInput = event => {
@@ -184,23 +210,45 @@ class Jobs extends Component {
     <JobDetails data={jobsInfo} error={errorFound} />
   )
 
+  selectLocations = event => {
+    this.setState(
+      prevState => ({
+        selectedLocations: prevState.selectedLocations.includes(
+          event.target.value,
+        )
+          ? [
+              ...prevState.selectedLocations.filter(
+                each => each !== event.target.value,
+              ),
+            ]
+          : [...prevState.selectedLocations, event.target.value],
+      }),
+      this.getUpdatedJobsData,
+    )
+  }
+
+  getUpdatedJobsData = () => {
+    const {selectedLocations, jobsData} = this.state
+    const filteredJobs = jobsData.filter(each =>
+      selectedLocations.some(location => each.location.includes(location)),
+    )
+    this.setState({jobsData: filteredJobs})
+  }
+
   renderSuccessView = () => {
     const {
       jobsData,
       profileDataFetched,
       searchParam,
-      isNotPresent,
       toRedirect,
       jobsInfo,
       profileFailed,
       errorFound,
-      isLoading,
-      params,
-      rangeParams,
-      isChecked,
+      employmentTypesList,
+      salaryRangesList,
+      radioId,
+      selectedLocations,
     } = this.state
-    console.log(isChecked)
-    console.log(rangeParams)
     if (toRedirect) {
       return (
         (<Redirect to="/jobs/:{id}" />), this.isRedirected(jobsInfo, errorFound)
@@ -209,106 +257,64 @@ class Jobs extends Component {
     return (
       <div className=" jobs-bg-container">
         <div>
-          <div className="containers">
-            <div className="leftContainer">
-              {profileFailed ? (
-                <div className="loader-container" data-testid="loader">
-                  <Loader
-                    type="ThreeDots"
-                    color="#ffffff"
-                    height="50"
-                    width="50"
-                  />
-                </div>
-              ) : (
-                <Profile details={profileDataFetched} />
-              )}
-              <hr />
-              <div>
-                <h1 className="heading">Type of Employement</h1>
-                <ul>
-                  {employmentTypesList.map(each => (
-                    <TypeOfEmployement
-                      item={each}
-                      handleCheckedStatus={this.handleCheckedStatus}
-                      key={each.id}
-                    />
-                  ))}
-                </ul>
-              </div>
-              <hr />
-              <div>
-                <h1 className="heading">Salary Range</h1>
-                <ul>
-                  {salaryRangesList.map(each => (
-                    <SalaryRange
-                      range={each}
-                      handleRadioStatus={this.handleRadioStatus}
-                      key={each.id}
-                    />
-                  ))}
-                </ul>
-              </div>
+          <div className="jobsDisplayContainer">
+            <div className="searchContainer">
+              <input
+                type="search"
+                className="searchCont"
+                placeholder="Search"
+                onChange={this.onChangeInput}
+                value={searchParam}
+              />
+              <button
+                className="searchIcon"
+                onClick={this.onClickSearch}
+                data-testid="searchButton"
+                type="button"
+              >
+                <BsSearch className="search-icon" />
+              </button>
             </div>
-            <div className="jobsDisplayContainer">
-              <div className="searchContainer">
-                <input
-                  type="search"
-                  className="searchCont"
-                  placeholder="Search"
-                  onChange={this.onChangeInput}
-                  value={searchParam}
-                />
-                <button
-                  className="searchIcon"
-                  onClick={this.onClickSearch}
-                  data-testid="searchButton"
-                  type="button"
-                >
-                  <BsSearch className="search-icon" />
-                </button>
-              </div>
-              <ul>
-                {jobsData.map(eachItem => (
-                  <Link to={`/jobs/${eachItem.id}`}>
-                    <li className="jobItemContainer" key={eachItem.id}>
-                      <div className="logo-title-container">
-                        <img
-                          src={eachItem.companyLogoUrl}
-                          className="CompanyLogo"
-                          alt="company logo"
-                        />
-                        <div className="title-ratings-container">
-                          <h1 className="title">{eachItem.title}</h1>
-                          <div className="rating-container">
-                            <FaStar className="starIcon" />
-                            <p>{eachItem.rating}</p>
-                          </div>
+            <ul>
+              {jobsData.map(eachItem => (
+                <Link to={`/jobs/${eachItem.id}`} className="linkElement">
+                  <li className="jobItemContainer" key={eachItem.id}>
+                    <div className="logo-title-container">
+                      <img
+                        src={eachItem.companyLogoUrl}
+                        className="CompanyLogo"
+                        alt="company logo"
+                      />
+                      <div className="title-ratings-container">
+                        <h1 className="title">{eachItem.title}</h1>
+                        <div className="rating-container">
+                          <FaStar className="starIcon" />
+                          <p>{eachItem.rating}</p>
                         </div>
                       </div>
-                      <div className="location-employementType-container">
-                        <div className="iconsTextWrap">
-                          <div className="icon-text-container">
-                            <MdLocationOn className="icons" />
-                            <p>{eachItem.location}</p>
-                          </div>
-                          <div className="icon-text-container">
-                            <MdWork className="icons" />
-                            <p>{eachItem.employementType}</p>
-                          </div>
+                    </div>
+                    <div className="location-employementType-container">
+                      <div className="iconsTextWrap">
+                        <div className="icon-text-container">
+                          <MdLocationOn className="icons" />
+                          <p>{eachItem.location}</p>
                         </div>
-                        <p>{eachItem.packagePerAnnum}</p>
+                        <div className="icon-text-container">
+                          <MdWork className="icons" />
+                          <p>{eachItem.employementType}</p>
+                        </div>
                       </div>
-                      <hr />
-                      <h1>Description</h1>
-                      <p>{eachItem.jobDescription}</p>
-                    </li>
-                  </Link>
-                ))}
-              </ul>
-            </div>
-            {jobsData.length === 0 && <NoJobsFound />}
+                      <p>{eachItem.packagePerAnnum}</p>
+                    </div>
+                    <hr />
+                    <h1>Description</h1>
+                    <p>{eachItem.jobDescription}</p>
+                  </li>
+                </Link>
+              ))}
+            </ul>
           </div>
+          {jobsData.length === 0 && <NoJobsFound />}
         </div>
       </div>
     )
@@ -319,6 +325,7 @@ class Jobs extends Component {
       <img
         src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
         alt="failure view"
+        className="errorImage"
       />
       <h1>Oops! Something Went Wrong</h1>
       <p>We cannot seem to find the page you are looking for</p>
@@ -346,10 +353,78 @@ class Jobs extends Component {
   }
 
   render() {
+    const {
+      profileDataFetched,
+      profileFailed,
+      employmentTypesList,
+      salaryRangesList,
+      radioId,
+    } = this.state
     return (
       <div className=" jobs-bg-container">
         <Header />
-        {this.renderView()}
+        <div className="containers">
+          <div className="leftContainer">
+            {profileFailed ? (
+              <div className="loader-container" data-testid="loader">
+                <Loader
+                  type="ThreeDots"
+                  color="#ffffff"
+                  height="50"
+                  width="50"
+                />
+              </div>
+            ) : (
+              <Profile details={profileDataFetched} />
+            )}
+            <hr />
+            <div>
+              <h1 className="heading">Type of Employement</h1>
+              <ul>
+                {employmentTypesList.map(each => (
+                  <TypeOfEmployement
+                    item={each}
+                    handleCheckedStatus={this.handleCheckedStatus}
+                    key={each.id}
+                  />
+                ))}
+              </ul>
+            </div>
+            <hr />
+            <div>
+              <h1 className="heading">Salary Range</h1>
+              <ul>
+                {salaryRangesList.map(each => (
+                  <SalaryRange
+                    range={each}
+                    handleRadioStatus={this.handleRadioStatus}
+                    key={each.id}
+                    isActive={each.salaryRangeId === radioId}
+                  />
+                ))}
+              </ul>
+            </div>
+            <hr />
+            <div>
+              <h1 className="heading">Location</h1>
+              <ul>
+                {locationsList.map(each => (
+                  <li className="listItems" key={each.locationId}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        value={each.locationId}
+                        onChange={this.selectLocations}
+                      />
+                      {each.label}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          {this.renderView()}
+        </div>
       </div>
     )
   }

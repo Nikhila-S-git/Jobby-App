@@ -6,13 +6,16 @@
 
 .jobs-bg-container {
   background-color: black;
-  /* display: flex; */
   padding: 20px;
 }
 
 .leftContainer {
   width: 40vw;
   padding: 20px;
+  position: sticky;
+  height: 100vh;
+  top: 0;
+  overflow-y: auto;
 }
 
 .listItems {
@@ -35,6 +38,8 @@
   background-color: transparent;
   border-radius: 3px;
   color: white;
+  width: 300px;
+  border: none;
 }
 
 .searchIcon {
@@ -45,8 +50,25 @@
 .searchContainer {
   border-style: none;
   display: flex;
+  margin-left: 40px;
 }
 
 .containers {
   display: flex;
+}
+
+.linkElement {
+  text-decoration: none;
+}
+
+.listItems {
+  list-style-type: none;
+  display: flex;
+  align-self: flex-start;
+  color: antiquewhite;
+}
+
+.errorImage {
+  height: 100px;
+  width: 200px;
 }
